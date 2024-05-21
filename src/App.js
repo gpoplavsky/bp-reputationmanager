@@ -1,25 +1,29 @@
-import logo from './logo.svg';
-import './App.css';
+// src/App.js
+
+import React, { useState } from 'react';
+import SearchForm from './components/SearchForm/SearchForm';
+import SearchResults from './components/SearchResults/SearchResults';
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    const [results, setResults] = useState([]);
+
+    const handleSearch = async (keyword) => {
+        try {
+            const response = await fetch(`https://bp-reputationmanager.cloudfunctions.net/search?keyword=${keyword}`);
+            const data = await response.json();
+            setResults(data.results);
+        } catch (error) {
+            console.error('Error fetching search results:', error);
+        }
+    };
+
+    return (
+        <div className="App">
+            <h1>Ingresa la palabra clave</h1>
+            <SearchForm onSearch={handleSearch} />
+            <SearchResults results={results} />
+        </div>
+    );
 }
 
 export default App;
